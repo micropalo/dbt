@@ -10,31 +10,32 @@
             status = "okay";
             pinctrl-0 = <&i2s0_pins>;
             pinctrl-names = "default";
+            /* This is the magic line for the H3 to allow recording */
+            #sound-dai-cells = <0>; 
         };
     };
 
-    /* Optional: If using a simple DAC like PCM5102a (which needs no I2C) */
     fragment@1 {
         target-path = "/";
         __overlay__ {
-            pcm5102a: pcm5102a {
+            /* We define a generic codec that handles both IN and OUT */
+            i2s_codec: i2s_codec {
                 #sound-dai-cells = <0>;
-                compatible = "ti,pcm5102a";
+                compatible = "linux,spdif-dit"; 
                 status = "okay";
             };
 
             sound_i2s {
                 compatible = "simple-audio-card";
-                simple-audio-card,name = "I2S-DAC";
+                simple-audio-card,name = "I2S-FullDuplex";
                 simple-audio-card,format = "i2s";
-                simple-audio-card,mclk-fs = <256>;
                 
                 simple-audio-card,cpu {
                     sound-dai = <&i2s0>;
                 };
 
                 simple-audio-card,codec {
-                    sound-dai = <&pcm5102a>;
+                    sound-dai = <&i2s_codec>;
                 };
             };
         };
