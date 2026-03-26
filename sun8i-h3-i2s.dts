@@ -10,18 +10,24 @@
             status = "okay";
             pinctrl-0 = <&i2s0_pins>;
             pinctrl-names = "default";
-            /* This is the magic line for the H3 to allow recording */
-            #sound-dai-cells = <0>; 
+            #sound-dai-cells = <0>;
         };
     };
 
     fragment@1 {
         target-path = "/";
         __overlay__ {
-            /* We define a generic codec that handles both IN and OUT */
-            i2s_codec: i2s_codec {
+            /* Define the Speaker Codec */
+            spk_out: spk-out {
                 #sound-dai-cells = <0>;
-                compatible = "linux,spdif-dit"; 
+                compatible = "linux,spdif-dit";
+                status = "okay";
+            };
+
+            /* Define the Mic Codec */
+            mic_in: mic-in {
+                #sound-dai-cells = <0>;
+                compatible = "linux,spdif-dir";
                 status = "okay";
             };
 
@@ -29,13 +35,20 @@
                 compatible = "simple-audio-card";
                 simple-audio-card,name = "I2S-FullDuplex";
                 simple-audio-card,format = "i2s";
-                
-                simple-audio-card,cpu {
+
+                /* CPU acts as Clock Master for both */
+                simple-audio-card,bitclock-master = <&dailink0_cpu>;
+                simple-audio-card,frame-master = <&dailink0_cpu>;
+
+                dailink0_cpu: simple-audio-card,cpu {
                     sound-dai = <&i2s0>;
                 };
 
+                /* This links BOTH codecs to the same bus */
                 simple-audio-card,codec {
-                    sound-dai = <&i2s_codec>;
+                    sound-dai = <&spk_out>;
+                    /* Note: If your kernel is older, you might need 
+                       separate dailinks for playback and capture */
                 };
             };
         };
