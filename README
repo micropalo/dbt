@@ -1,6 +1,8 @@
 device tree for orangepi one h3
 I2S protocol
 
+driving a max98357a amp
+
 
 to build the .dtbo
 dtc -I dts -O dtb -o sun8i-h3-i2s.dtbo sun8i-h3-i2s.dts
