@@ -1,0 +1,10 @@
+[Unit]
+Description=ALSA I2S Keep-Alive
+After=sound.target
+
+[Service]
+ExecStart=/usr/bin/aplay -t raw -r 44100 -c 2 -f S16_LE /dev/zero
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
