@@ -5,3 +5,12 @@ I2S protocol
 to build the .dtbo
 dtc -I dts -O dtb -o sun8i-h3-i2s.dtbo sun8i-h3-i2s.dts
 
+copy the .dtbo file
+cp sun8i-h3-i2s.dtbo /boot/dtb/overlay/
+
+copy the two sys file 
+cp asound.conf /etc/
+cp alsa-keepalive.service /etc/systemd/system/
+
+now enable the alsa-keeplive.service
+sudo systemctl start alsa-keepalive    
