@@ -17,26 +17,18 @@
     fragment@1 {
         target-path = "/";
         __overlay__ {
-            /* Define the Speaker Codec */
-            spk_out: spk-out {
+            pcm5102a: pcm5102a {
                 #sound-dai-cells = <0>;
-                compatible = "linux,spdif-dit";
-                status = "okay";
-            };
-
-            /* Define the Mic Codec */
-            mic_in: mic-in {
-                #sound-dai-cells = <0>;
-                compatible = "linux,spdif-dir";
+                compatible = "ti,pcm5102a";
                 status = "okay";
             };
 
             sound_i2s {
                 compatible = "simple-audio-card";
-                simple-audio-card,name = "I2S-FullDuplex";
+                simple-audio-card,name = "I2S-Fixed";
                 simple-audio-card,format = "i2s";
-
-                /* CPU acts as Clock Master for both */
+                
+                /* FORCE ORANGE PI AS MASTER */
                 simple-audio-card,bitclock-master = <&dailink0_cpu>;
                 simple-audio-card,frame-master = <&dailink0_cpu>;
 
@@ -44,11 +36,8 @@
                     sound-dai = <&i2s0>;
                 };
 
-                /* This links BOTH codecs to the same bus */
                 simple-audio-card,codec {
-                    sound-dai = <&spk_out>;
-                    /* Note: If your kernel is older, you might need 
-                       separate dailinks for playback and capture */
+                    sound-dai = <&pcm5102a>;
                 };
             };
         };
